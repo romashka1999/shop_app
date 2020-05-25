@@ -1,28 +1,37 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native'
 
 import CustomButton from '../shared/CustomButton';
 
 const ProductItem = ({imageUrl, title, price, onViewDetail, onAddToCart}) => {
+
+    const TouchableComp = Platform.OS === 'android' && Platform.Version >=21 ? TouchableNativeFeedback : TouchableOpacity;
+
     return (
         <View style={styles.product}>
-            <View style={styles.imageContainer}>
-                <Image 
-                    style={styles.image}
-                    source={{uri: imageUrl}}/>
-            </View>
-            <View style={styles.details}>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.price}>${price}</Text>
-            </View>
-            <View style={styles.actions}>
-                <CustomButton 
-                    buttonText="view details"
-                    onPress={onViewDetail}/>
-                <CustomButton 
-                    buttonText="Add To Cart"
-                    onPress={onAddToCart}/>
-            </View>
+            <TouchableComp 
+                onPress={onViewDetail}
+                useForeground>
+                <View>
+                    <View style={styles.imageContainer}>
+                        <Image 
+                            style={styles.image}
+                            source={{uri: imageUrl}}/>
+                    </View>
+                    <View style={styles.details}>
+                        <Text style={styles.title}>{title}</Text>
+                        <Text style={styles.price}>${price}</Text>
+                    </View>
+                    <View style={styles.actions}>
+                        <CustomButton 
+                            buttonText="view details"
+                            onPress={onViewDetail}/>
+                        <CustomButton 
+                            buttonText="Add To Cart"
+                            onPress={onAddToCart}/>
+                    </View>
+                </View>
+            </TouchableComp>
         </View>
     )
 }
@@ -37,7 +46,7 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 10,
         borderRadius: 10,
-        backgroundColor: 'white',
+        backgroundColor: '#ffefd5',
         height: 350,
         margin: 20,
         borderRadius: 20,
@@ -58,11 +67,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
-        marginVertical: 4
+        marginVertical: 4,
+        fontFamily: 'open-sans-bold'
     },
     price: {
         fontSize: 14,
-        color: '#888'
+        color: '#888',
+        fontFamily: 'open-sans'
     },
     actions: {
         flexDirection: 'row',

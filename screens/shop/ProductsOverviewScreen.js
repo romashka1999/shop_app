@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import ProductItem from '../../components/shop/ProductItem';
 
-const ProductsOverviewScreen = (props) => {
+const ProductsOverviewScreen = ({navigation}) => {
 
     const products = useSelector(state => state.products.availableProducts);
 
@@ -12,8 +12,11 @@ const ProductsOverviewScreen = (props) => {
 
     }
 
-    const viewDetailHandler = () => {
-        
+    const viewDetailHandler = (product) => {
+        navigation.navigate({routeName: 'ProductDetail', params: {
+            productId: product.id,
+            productTitle: product.title
+        }});
     }
 
     return (
@@ -25,8 +28,8 @@ const ProductsOverviewScreen = (props) => {
                     imageUrl={itemData.item.imageUrl}
                     title={itemData.item.title}
                     price={itemData.item.price.toFixed(2)}
-                    onAddToCart={addToCartHandler}
-                    onViewDetail={viewDetailHandler}/>
+                    onAddToCart={() => addToCartHandler}
+                    onViewDetail={() => viewDetailHandler(itemData.item)}/>
             )}/>
     )
 }

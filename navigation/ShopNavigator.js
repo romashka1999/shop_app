@@ -3,11 +3,12 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Platform } from 'react-native';
 
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
-
+import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import Colors from '../constants/Colors';
 
 const ProductsStackNavigator = createStackNavigator({
-    ProductsOverview: ProductsOverviewScreen
+    ProductsOverview: ProductsOverviewScreen,
+    ProductDetail: ProductDetailScreen
 }, {
     defaultNavigationOptions: {
         headerStyle: {
@@ -16,8 +17,9 @@ const ProductsStackNavigator = createStackNavigator({
         headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
         headerTitleAlign: 'center',
         headerTitleStyle: {
-            letterSpacing: 1
-        }
+            letterSpacing: 1,
+            fontFamily: 'open-sans-bold'
+        },
     }
 });
 

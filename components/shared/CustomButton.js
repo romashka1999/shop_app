@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
         margin: 10
     },
     text: {
+        fontFamily: 'open-sans',
         textTransform: 'uppercase',
         color: 'white',
-        fontWeight: 'bold',
         fontSize: 15,
         textAlign: 'center'
     }
