@@ -1,12 +1,19 @@
 import React from 'react'
 import { ScrollView ,StyleSheet, Text, View, Image} from 'react-native'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import CustomButton from '../../components/shared/CustomButton';
+import { addToCart } from '../../store/actions/cart';
 
 const ProductDetailScreen = ({navigation}) => {
     const productId = navigation.getParam('productId');
     const product = useSelector(state => state.products.availableProducts.find(product => product.id === productId));
+
+    const dispatch = useDispatch();
+
+    const addToCartHandler = () => {
+        dispatch(addToCart(product));
+    }
 
     return (
         <ScrollView>
@@ -16,7 +23,7 @@ const ProductDetailScreen = ({navigation}) => {
             <CustomButton 
                 buttonStyle={{marginTop: '7%', width: '70%', alignSelf: 'center'}}
                 buttonText="Add To Cart"
-                /*onPress={onAddToCart}*//>
+                onPress={addToCartHandler}/>
             <View style={styles.detail}>
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                 <Text style={styles.description}>{product.description}</Text>

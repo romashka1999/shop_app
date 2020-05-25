@@ -5,6 +5,7 @@ import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 
 import productsReducer from './store/reducers/products';
+import cartReducer from './store/reducers/cart';
 import ShopNavigator from './navigation/ShopNavigator';
 
 const fetchFonts = () => {
@@ -15,7 +16,8 @@ const fetchFonts = () => {
 }
 
 const rootReducer = combineReducers({
-    products: productsReducer
+    products: productsReducer,
+    cart: cartReducer
 });
 
 const store = createStore(rootReducer);

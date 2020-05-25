@@ -1,15 +1,20 @@
 import React from 'react'
-import { StyleSheet, FlatList } from 'react-native'
-import { useSelector } from 'react-redux';
+import { StyleSheet, FlatList, Platform } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import ProductItem from '../../components/shop/ProductItem';
+import { addToCart } from '../../store/actions/cart';
+import CustomHeaderButton from '../../components/shared/CustomHeaderButton';
 
 const ProductsOverviewScreen = ({navigation}) => {
 
     const products = useSelector(state => state.products.availableProducts);
 
-    const addToCartHandler = () => {
+    const dispatch = useDispatch();
 
+    const addToCartHandler = (product) => {
+        dispatch(addToCart(product));
     }
 
     const viewDetailHandler = (product) => {
@@ -28,7 +33,7 @@ const ProductsOverviewScreen = ({navigation}) => {
                     imageUrl={itemData.item.imageUrl}
                     title={itemData.item.title}
                     price={itemData.item.price.toFixed(2)}
-                    onAddToCart={() => addToCartHandler}
+                    onAddToCart={() => addToCartHandler(itemData.item)}
                     onViewDetail={() => viewDetailHandler(itemData.item)}/>
             )}/>
     )
@@ -36,6 +41,14 @@ const ProductsOverviewScreen = ({navigation}) => {
 
 ProductsOverviewScreen.navigationOptions = {
     headerTitle: 'All Products',
+    headerRight: (
+        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item 
+                title="Cart"
+                iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                onPress={() => console.log('cartas naxulobooo ?')}/>
+        </HeaderButtons>
+    )
 }
 
 export default ProductsOverviewScreen;
