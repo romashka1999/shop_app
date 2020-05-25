@@ -22,7 +22,7 @@ const ProductDetailScreen = ({navigation}) => {
                 source={{uri: product.imageUrl}}/>
             <CustomButton 
                 buttonStyle={{marginTop: '7%', width: '70%', alignSelf: 'center'}}
-                buttonText="Add To Cart"
+                buttonText="add to cart"
                 onPress={addToCartHandler}/>
             <View style={styles.detail}>
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>

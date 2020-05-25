@@ -27,7 +27,7 @@ const ProductItem = ({imageUrl, title, price, onViewDetail, onAddToCart}) => {
                             buttonText="view details"
                             onPress={onViewDetail}/>
                         <CustomButton 
-                            buttonText="Add To Cart"
+                            buttonText="add to cart"
                             onPress={onAddToCart}/>
                     </View>
                 </View>

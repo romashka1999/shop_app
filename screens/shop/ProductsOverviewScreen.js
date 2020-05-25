@@ -39,16 +39,19 @@ const ProductsOverviewScreen = ({navigation}) => {
     )
 }
 
-ProductsOverviewScreen.navigationOptions = {
-    headerTitle: 'All Products',
-    headerRight: (
-        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-            <Item 
-                title="Cart"
-                iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-                onPress={() => console.log('cartas naxulobooo ?')}/>
-        </HeaderButtons>
-    )
+ProductsOverviewScreen.navigationOptions = (navigationData) => {
+    const { navigation } = navigationData;
+    return {
+        headerTitle: 'All Products',
+        headerRight: (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item 
+                    title="Cart"
+                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                    onPress={() => navigation.navigate({routeName: 'Cart'})}/>
+            </HeaderButtons>
+        )
+    }
 }
 
 export default ProductsOverviewScreen;
