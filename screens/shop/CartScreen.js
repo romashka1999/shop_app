@@ -1,10 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import CustomButton from '../../components/shared/CustomButton';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
+import { removeFromCart } from '../../store/actions/cart'
 
 const CartScreen = () => {
 
@@ -13,7 +14,9 @@ const CartScreen = () => {
         return Object.keys(state.cart.items).map(key => {
             return {...state.cart.items[key], id: key}
         });
-    });
+    }).sort((a, b) => a.id > b.id ? 1 : -1);
+
+    const dispatch = useDispatch();
 
     return (
         <View style={styles.screen}>
@@ -34,7 +37,9 @@ const CartScreen = () => {
                         title={itemData.item.title}
                         amount={itemData.item.sum}
                         quantity={itemData.item.quantity}
-                        onDelete={() => console.log('waaashala')}/>
+                        onDelete={() => {
+                            dispatch(removeFromCart(itemData.item.id));
+                        }}/>
                 )}/>
             
         </View>
