@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import CustomButton from '../../components/shared/CustomButton';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
-import { removeFromCart } from '../../store/actions/cart'
+import { removeFromCart } from '../../store/actions/cart';
+import { addOrder } from '../../store/actions/orders'
 
 const CartScreen = () => {
 
@@ -25,9 +26,11 @@ const CartScreen = () => {
                     Total: <Text style={styles.amount}>${cartTotalAmountPrice.toFixed(2)}</Text>
                 </Text>
                 <CustomButton 
+                    disabled={cartItems.length===0}
                     buttonText="order now"
-                    onPress={() => console.log('orderiii')}
-                    disabled={cartItems.length===0}/>
+                    onPress={() => {
+                        dispatch(addOrder(cartItems, cartTotalAmountPrice));
+                    }}/>
             </View>
             <FlatList
                 keyExtractor={item => item.id}

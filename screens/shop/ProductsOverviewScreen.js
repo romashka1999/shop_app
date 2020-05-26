@@ -43,12 +43,20 @@ ProductsOverviewScreen.navigationOptions = (navigationData) => {
     const { navigation } = navigationData;
     return {
         headerTitle: 'All Products',
-        headerRight: (
+        headerRight: () => (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item 
                     title="Cart"
                     iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
                     onPress={() => navigation.navigate({routeName: 'Cart'})}/>
+            </HeaderButtons>
+        ),
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item 
+                    title="Menu"
+                    iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
+                    onPress={() => navigation.toggleDrawer()}/>
             </HeaderButtons>
         )
     }
