@@ -23,7 +23,7 @@ const CartScreen = () => {
         <View style={styles.screen}>
             <View style={styles.summary}>
                 <Text style={styles.sumaryText}>
-                    Total: <Text style={styles.amount}>${cartTotalAmountPrice.toFixed(2)}</Text>
+                    Total: <Text style={styles.amount}>${Math.abs(cartTotalAmountPrice.toFixed(2))}</Text>
                 </Text>
                 <CustomButton 
                     disabled={cartItems.length===0}

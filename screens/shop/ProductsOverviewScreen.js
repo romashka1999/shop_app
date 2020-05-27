@@ -6,6 +6,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import ProductItem from '../../components/shop/ProductItem';
 import { addToCart } from '../../store/actions/cart';
 import CustomHeaderButton from '../../components/shared/CustomHeaderButton';
+import CustomButton from '../../components/shared/CustomButton';
 
 const ProductsOverviewScreen = ({navigation}) => {
 
@@ -33,8 +34,14 @@ const ProductsOverviewScreen = ({navigation}) => {
                     imageUrl={itemData.item.imageUrl}
                     title={itemData.item.title}
                     price={itemData.item.price.toFixed(2)}
-                    onAddToCart={() => addToCartHandler(itemData.item)}
-                    onViewDetail={() => viewDetailHandler(itemData.item)}/>
+                    onSelect={() => viewDetailHandler(itemData.item)}>
+                    <CustomButton 
+                        buttonText="view details"
+                        onPress={() => viewDetailHandler(itemData.item)}/>
+                    <CustomButton 
+                        buttonText="add to cart"
+                        onPress={() => addToCartHandler(itemData.item)}/>
+                </ProductItem>        
             )}/>
     )
 }

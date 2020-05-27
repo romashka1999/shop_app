@@ -1,16 +1,14 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native'
 
-import CustomButton from '../shared/CustomButton';
-
-const ProductItem = ({imageUrl, title, price, onViewDetail, onAddToCart}) => {
+const ProductItem = ({imageUrl, title, price, onSelect, children}) => {
 
     const TouchableComp = Platform.OS === 'android' && Platform.Version >=21 ? TouchableNativeFeedback : TouchableOpacity;
 
     return (
         <View style={styles.product}>
             <TouchableComp 
-                onPress={onViewDetail}
+                onPress={onSelect}
                 useForeground>
                 <View>
                     <View style={styles.imageContainer}>
@@ -23,12 +21,7 @@ const ProductItem = ({imageUrl, title, price, onViewDetail, onAddToCart}) => {
                         <Text style={styles.price}>${price}</Text>
                     </View>
                     <View style={styles.actions}>
-                        <CustomButton 
-                            buttonText="view details"
-                            onPress={onViewDetail}/>
-                        <CustomButton 
-                            buttonText="add to cart"
-                            onPress={onAddToCart}/>
+                        {children}
                     </View>
                 </View>
             </TouchableComp>
@@ -62,7 +55,7 @@ const styles = StyleSheet.create({
     },
     details: {
         alignItems: 'center',
-        height: '15%',
+        height: '17%',
         padding: 10
     },
     title: {
@@ -79,6 +72,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: '25%',
+        height: '23%',
     }
 })
