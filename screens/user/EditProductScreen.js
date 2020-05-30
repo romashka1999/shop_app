@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react'
-import { StyleSheet, View, ScrollView, Platform, Alert, KeyboardAvoidingView, Text } from 'react-native'
+import { StyleSheet, View, ScrollView, Platform, Alert, KeyboardAvoidingView } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -120,7 +120,7 @@ const EditProductScreen = ({navigation}) => {
     return (
         <KeyboardAvoidingView
             style={{flex: 1}}
-            behavior="padding"
+            behavior={Platform.OS === "ios" ? "padding" : null}
             keyboardVerticalOffset={100}>
             <ScrollView>
                 <View style={styles.form}>
