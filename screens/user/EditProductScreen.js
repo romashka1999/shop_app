@@ -1,5 +1,5 @@
-import React, {  useEffect, useCallback, useReducer } from 'react'
-import { StyleSheet, View, ScrollView, Platform, Alert } from 'react-native'
+import React, { useState, useEffect, useCallback, useReducer } from 'react'
+import { StyleSheet, View, ScrollView, Platform, Alert, KeyboardAvoidingView, Text } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CustomHeaderButton from '../../components/shared/CustomHeaderButton';
 import { createProduct, updateProduct } from '../../store/actions/products';
 import Input from '../../components/shared/Input';
+import Loading from '../../components/shared/Loading';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -37,6 +38,9 @@ const formReducer = (state, action) => {
 }
 
 const EditProductScreen = ({navigation}) => {
+    const [isLoading, setIsloading] = useState(false);
+    const [error, setError] = useState(false);
+
     const productId = navigation.getParam('productId');
     const product = useSelector(state => state.products.userProducts.find(product => product.id === productId));
 
@@ -62,87 +66,116 @@ const EditProductScreen = ({navigation}) => {
         dispatchFormState({type: FORM_INPUT_UPDATE, value: inputValue, isValid: inputValidity, input: inputName});
     }, [dispatchFormState]);
 
+    useEffect(() => {
+        if(error) {
+            Alert.alert('An error occured', error, [
+                {text: 'Okay'}
+            ]);
+        }
+    }, [error]);
 
-    const submitHandler = useCallback(() => {
+
+    const submitHandler = useCallback( async () => {
         if(!formState.formIsValid) {
             Alert.alert('Wrong Form', 'Please Check the errors in the form :)', [
                 {text: 'Okay'}
             ]);
             return
         }
-        if(product) {
-            dispatch(updateProduct(
-                productId, 
-                formState.inputValues.title, 
-                formState.inputValues.description,
-                formState.inputValues.imageUrl
-            ));
-        } else {
-            dispatch(createProduct(
-                formState.inputValues.title, 
-                formState.inputValues.description,
-                formState.inputValues.imageUrl,
-                +formState.inputValues.price
-            ));
-
+        setError(null);
+        setIsloading(true);
+        try {
+            if(product) {
+                await dispatch(updateProduct(
+                    productId, 
+                    formState.inputValues.title, 
+                    formState.inputValues.description,
+                    formState.inputValues.imageUrl
+                ));
+            } else {
+                await dispatch(createProduct(
+                    formState.inputValues.title, 
+                    formState.inputValues.description,
+                    formState.inputValues.imageUrl,
+                    +formState.inputValues.price
+                ));
+            }
+            navigation.goBack();
+        } catch (error) {
+            setError(error.message);
         }
-        navigation.goBack();
+        setIsloading(false);
     }, [dispatch, productId, formState]);
 
     useEffect(() => {
         navigation.setParams({submit: submitHandler});
-    }, [submitHandler])
+    }, [submitHandler]);
+
+    if(error) {
+
+    }
+
+    if(isLoading) {
+        return(
+            <Loading />
+        );
+    }
 
     return (
-        <ScrollView>
-            <View style={styles.form}>
-                <Input 
-                    id="title"
-                    label="Title"
-                    errorText="Please Enter a valid Title"
-                    keyboardType="default"
-                    autoCapitalize="sentences"
-                    returnKeyType="next"
-                    required
-                    initialValue={product ? product.title : ''}
-                    initiallyValid={!!product}
-                    onInputChange={inputChangeHandler}/>
-                <Input 
-                    id="imageUrl"
-                    label="Image Url"
-                    errorText="Please Enter a valid Image Url"
-                    keyboardType="default"
-                    returnKeyType="next"
-                    required
-                    initialValue={product ? product.imageUrl : ''}
-                    initiallyValid={!!product}
-                    onInputChange={inputChangeHandler}/>
-                {product ? null : (
+        <KeyboardAvoidingView
+            style={{flex: 1}}
+            behavior="padding"
+            keyboardVerticalOffset={100}>
+            <ScrollView>
+                <View style={styles.form}>
                     <Input 
-                        id="price"
-                        label="Price"
-                        errorText="Please Enter a valid Price"
-                        keyboardType="decimal-pad"
+                        id="title"
+                        label="Title"
+                        errorText="Please Enter a valid Title"
+                        keyboardType="default"
+                        autoCapitalize="sentences"
                         returnKeyType="next"
                         required
-                        min={0.1}
+                        initialValue={product ? product.title : ''}
+                        initiallyValid={!!product}
                         onInputChange={inputChangeHandler}/>
-                )}
-                <Input 
-                    id="description"
-                    label="Description"
-                    errorText="Please Enter a valid Description"
-                    keyboardType="default"
-                    autoCapitalize="sentences"
-                    multiline
-                    numberOfLines={3}
-                    required
-                    minLength={7}
-                    initialValue={product ? product.description : ''}
-                    initiallyValid={!!product}
-                    onInputChange={inputChangeHandler}/>
-            </View>
-        </ScrollView>
+                    <Input 
+                        id="imageUrl"
+                        label="Image Url"
+                        errorText="Please Enter a valid Image Url"
+                        keyboardType="default"
+                        returnKeyType="next"
+                        required
+                        initialValue={product ? product.imageUrl : ''}
+                        initiallyValid={!!product}
+                        onInputChange={inputChangeHandler}/>
+                    {product ? null : (
+                        <Input 
+                            id="price"
+                            label="Price"
+                            errorText="Please Enter a valid Price"
+                            keyboardType="decimal-pad"
+                            returnKeyType="next"
+                            required
+                            min={0.1}
+                            onInputChange={inputChangeHandler}/>
+                    )}
+                    <Input 
+                        id="description"
+                        label="Description"
+                        errorText="Please Enter a valid Description"
+                        keyboardType="default"
+                        autoCapitalize="sentences"
+                        multiline
+                        numberOfLines={3}
+                        required
+                        minLength={7}
+                        initialValue={product ? product.description : ''}
+                        initiallyValid={!!product}
+                        onInputChange={inputChangeHandler}/>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 }
 
