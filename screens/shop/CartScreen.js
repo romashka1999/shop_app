@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -6,9 +6,21 @@ import CustomButton from '../../components/shared/CustomButton';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
 import { removeFromCart } from '../../store/actions/cart';
-import { addOrder } from '../../store/actions/orders'
+import { addOrder } from '../../store/actions/orders';
+import Loading from '../../components/shared/Loading';
 
 const CartScreen = () => {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
+
+    useEffect(() => {
+        if(error) {
+            Alert.alert('An error occured', error, [
+                {text: 'Okay'}
+            ]);
+        }
+    }, [error]);
 
     const cartTotalAmountPrice = useSelector(state => state.cart.totalAmountPrice);
     const cartItems = useSelector(state => {
@@ -19,18 +31,29 @@ const CartScreen = () => {
 
     const dispatch = useDispatch();
 
+    const sendOrderHandler = async () => {
+        setError(null);
+        setIsLoading(true);
+        try {
+            await dispatch(addOrder(cartItems, cartTotalAmountPrice));
+        } catch (error) {
+            setError(error.message);
+        }
+        setIsLoading(false);
+    }
+
     return (
         <View style={styles.screen}>
             <View style={styles.summary}>
                 <Text style={styles.sumaryText}>
                     Total: <Text style={styles.amount}>${Math.abs(cartTotalAmountPrice.toFixed(2))}</Text>
                 </Text>
-                <CustomButton 
-                    disabled={cartItems.length===0}
-                    buttonText="order now"
-                    onPress={() => {
-                        dispatch(addOrder(cartItems, cartTotalAmountPrice));
-                    }}/>
+                {isLoading ? <Loading /> : (
+                    <CustomButton 
+                        disabled={cartItems.length === 0}
+                        buttonText="order now"
+                        onPress={sendOrderHandler}/>
+                )}
             </View>
             <FlatList
                 keyExtractor={item => item.id}

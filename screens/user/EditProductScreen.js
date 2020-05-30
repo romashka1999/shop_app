@@ -111,10 +111,6 @@ const EditProductScreen = ({navigation}) => {
         navigation.setParams({submit: submitHandler});
     }, [submitHandler]);
 
-    if(error) {
-
-    }
-
     if(isLoading) {
         return(
             <Loading />
