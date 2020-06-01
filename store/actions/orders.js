@@ -4,8 +4,9 @@ export const ADD_ORDER = 'ADD_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
 export const fetchOrders = () => {
-    return async dispatch => {
-        const response = await fetch('https://shop-app-ea6db.firebaseio.com/orders/u1.json');
+    return async (dispatch, getState) => {
+        const userId = getState().auth.userId;
+        const response = await fetch(`https://shop-app-ea6db.firebaseio.com/orders/${userId}.json`);
         
         if(!response.ok) {
             throw new Error("Something went wrong");
@@ -30,9 +31,11 @@ export const fetchOrders = () => {
 }
 
 export const addOrder = (cartItems, totalAmountPrice) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        const userId = getState().auth.userId;
         const date = new Date();
-        const response = await fetch('https://shop-app-ea6db.firebaseio.com/orders/u1.json', {
+        const response = await fetch(`https://shop-app-ea6db.firebaseio.com/orders/${userId}.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,7 +48,8 @@ export const addOrder = (cartItems, totalAmountPrice) => {
         });
 
         if(!response.ok) {
-            throw new Error("Something went wrong");
+            const errData = await response.json();
+            throw new Error("Something went wrong" || errData.error);
         }
 
         const responseData = await response.json();

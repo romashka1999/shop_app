@@ -1,10 +1,11 @@
-import React, { useReducer, useCallback, useState } from 'react'
-import { StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import React, { useReducer, useCallback, useState, useEffect } from 'react'
+import { StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch } from 'react-redux';
 
 import Input from '../../components/shared/Input';
 import CustomButton from '../../components/shared/CustomButton';
+import Loading from '../../components/shared/Loading';
 import Colors from '../../constants/Colors';
 import { signUp, signIn } from '../../store/actions/auth';
 
@@ -37,7 +38,9 @@ const formReducer = (state, action) => {
     }
 }
 
-const AuthScreen = () => {
+const AuthScreen = ({navigation}) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [isSignUp, setIsSignUp] = useState(false);
     const dispatch = useDispatch();
 
@@ -53,23 +56,44 @@ const AuthScreen = () => {
         formIsValid: false
     });
 
-    const authHandler = () => {
-        if(isSignUp) {
-            dispatch(signUp(
-                formState.inputValues.email,
-                formState.inputValues.password
-            ));
-        } else {
-            dispatch(signIn(
-                formState.inputValues.email,
-                formState.inputValues.password
-            ));
+    useEffect(() => {
+        if(error) {
+            Alert.alert('An error occured', error, [
+                {text: 'Okay'}
+            ]);
         }
+    }, [error])
+
+    const authHandler = async () => {
+        setError(null);
+        setIsLoading(true);
+        try {
+            if(isSignUp) {
+                await dispatch(signUp(
+                    formState.inputValues.email,
+                    formState.inputValues.password
+                ));
+                setIsLoading(false);
+                Alert.alert('success', 'Registered :)', [
+                    {text: 'Good'}
+                ]);
+            } else {
+                await dispatch(signIn(
+                    formState.inputValues.email,
+                    formState.inputValues.password
+                ));
+                navigation.navigate('Shop');
+            }
+        } catch (error) {
+            setError(error.message);
+            setIsLoading(false);
+        }    
     }
 
     const inputChangeHandler = useCallback((inputName, inputValue, inputValidity) => {
         dispatchFormState({type: FORM_INPUT_UPDATE, value: inputValue, isValid: inputValidity, input: inputName});
     }, [dispatchFormState]);
+
 
     return (
         <KeyboardAvoidingView
@@ -79,6 +103,7 @@ const AuthScreen = () => {
             <LinearGradient
                 style={styles.gradient}
                 colors={[Colors.accent, Colors.primary]}>
+            { isLoading ? <Loading /> :
             <View style={styles.authContainer}>
                 <ScrollView
                     style={{width: '100%'}}>
@@ -113,6 +138,7 @@ const AuthScreen = () => {
                         onPress={() => {setIsSignUp(currentState => !currentState)}}/>
                 </ScrollView>
             </View>
+            }
             </LinearGradient>
         </KeyboardAvoidingView>
     )

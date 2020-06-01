@@ -16,18 +16,18 @@ export const signUp = (email, password) => {
         });
 
         if(!response.ok) {
-            throw new Error('Something went wrong');
+            const errorResponseData = await response.json();
+            throw new Error(errorResponseData.error.message);
         }
 
         const responseData = await response.json();
-        console.log(responseData);
         dispatch({ type: SIGN_UP });
     }
 }
 
 export const signIn = (email, password) => {
     return async dispatch => {
-        const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=signUp?key=AIzaSyBMih4DOJGO6uFzD0VPyQzpgC1d-p3cRy0',{
+        const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBMih4DOJGO6uFzD0VPyQzpgC1d-p3cRy0',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -39,12 +39,19 @@ export const signIn = (email, password) => {
             })
         });
 
+
+
         if(!response.ok) {
-            throw new Error('Something went wrong');
+            const errorResponseData = await response.json();
+            throw new Error(errorResponseData.error.message);
         }
 
         const responseData = await response.json();
-        console.log(responseData);
-        dispatch({ type: SIGN_IN });
+
+        const token = responseData.idToken;
+        const userId = responseData.localId;
+        const refreshToken = responseData.refreshToken;
+
+        dispatch({ type: SIGN_IN, token: token, userId: userId });
     }
 }
