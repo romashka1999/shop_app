@@ -27,8 +27,10 @@ const StartupScreen = ({navigation}) => {
                 return;
             }   
 
+            const expirationTime = expDate.getTime() - new Date().getTime();
+
             navigation.navigate('Shop');
-            dispatch(authenticate(userId, token));
+            dispatch(authenticate(userId, token, expirationTime));
         }
         tryLogin();
     }, [])

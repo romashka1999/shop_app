@@ -1,4 +1,4 @@
-import { SIGN_UP, AUTHENTICATE } from "../actions/auth";
+import { SIGN_UP, AUTHENTICATE, LOGOUT } from "../actions/auth";
 
 const initialState = {
     token: null,
@@ -15,6 +15,13 @@ export default (state = initialState, action) => {
                 token: action.token,
                 userId: action.userId
             }
+        case LOGOUT:
+            console.log('asssaaa')
+            return {
+                ...state,
+                token: null,
+                userId: null
+            };
         default:
             return state;
     }
